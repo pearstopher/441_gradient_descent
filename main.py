@@ -18,17 +18,21 @@
 # Report the best performance out of 10 trials for each of the different η value cases.
 # Provide some comments and analysis about your results.
 # Please include your (concise) GD code in your assignment write-up.
-#
 
-# going to calculate a derivative!
-# pip install sympy
-import sympy as sp
+import sympy as sp  # pip install sympy
 import random as rand
 import numpy as np
 
-LOOPS = 500  # default 500
-TRIALS = 10  # default 10
-STEPS = (0.1, 0.01, 0.001)  # default 0.1, 0.01, 0.001
+# constants from assignment
+LOOPS = 500
+TRIALS = 10
+STEPS = (0.1, 0.01, 0.001)
+RAND = (-10, 10)
+
+# set up the equation here
+F = "x**2 - 6*x + y**2 + 10*y + 20"
+SYMBOLS = ('x', 'y')
+MIN = (3, -5)
 
 
 # "silent"  does not print any output to the screen
@@ -37,75 +41,73 @@ STEPS = (0.1, 0.01, 0.001)  # default 0.1, 0.01, 0.001
 def gradient_descent(step_size, display="loud"):
 
     # initialize symbols
-    x, y = sp.symbols('x y')
-    # x = sp.Symbol('x') # singular
+    symbols = []
+    for s in SYMBOLS:
+        symbols.append(sp.Symbol(s))
 
-    # create the equation
-    # f(x, y) = x^2 - 6x + y^2 + 10y + 20
-    f = x**2 - 6*x + y**2 + 10*y + 20
-
-    # differentiate f with respect to x and y
-    del_f = [sp.diff(f, i) for i in (x, y)]  # "del", gradient, vector derivative
+    # differentiate F with respect to x and y
+    # del = gradient = vector derivative
+    del_f = [sp.diff(F, i) for i in symbols]
 
     # initialize v to random values in range
-    v = [rand.uniform(-10, 10), rand.uniform(-10, 10)]
+    v = []
+    for _ in range(len(symbols)):
+        v.append(rand.uniform(RAND[0], RAND[1]))
 
-    # set a step size
-    eta = step_size
-
+    # helper function for displaying values
     def print_val(value, i, text):
         print(text + " " + str(i) + ":\t" + str(value[0]) + ", " + str(value[1]))
 
-    # create function for incrementing X
+    # step function to implement the equation x_t = x_(t-1) - η∇f( x_(t-1) )
     def step(value):
-        # x_t = x_(t-1) - η∇f( x_(t-1) )
-        for i in range(len(value)):
-            # eta is just in scope
-            # I am substituting the value for x and y both times, out of confusion mostly
-            value[i] = value[i] - eta * sp.N(del_f[i].subs(x, value[i]).subs(y, value[i]))
+        for i in range(len(symbols)):
+            value[i] = value[i] - step_size * sp.N(del_f[i].subs(symbols[i], value[i]))
         return value
 
-    # run gd for 500 steps
+    # run GD for 500 steps
     for i in range(LOOPS):
         if display == "loud":
             print_val(v, i, "Iteration")
         v = step(v)
 
+    # print and return final value
     if display != "silent":
         print_val(v, LOOPS, "Final Iteration")
     return v
 
 
-# basic little function for running the program
+# run the Gradient Descent algorithm and display results
 def run():
-    results = np.empty((len(STEPS), TRIALS, 2))
+    results = np.empty((len(STEPS), TRIALS, len(SYMBOLS)))
 
     for trial in range(TRIALS):
         print("Trial " + str(trial + 1) + "... ")
-
         for step in range(len(STEPS)):
             values = gradient_descent(STEPS[step], "silent")
             results[step][trial] = values
 
+    # helper function to calculate distance from true minimum (3, -5)
     def distance(val):
-        # calculate distance from true minimum (3, -5)
-        a = abs(val[0] - 3)
-        b = abs(val[1] + 5)
-        return pow(a**2 + b**2, 0.5)
+        squared = 0
+        for i in range(len(val)):
+            squared += (val[i] - MIN[i])**2
+        return squared**0.5
 
+    # print out the results
     print("\nResults:\n")
     for step in range(len(STEPS)):
-        total = [0, 0]
-        avg = [0, 0]
-        best = [0, 0]
+        total = avg = best = np.zeros(len(SYMBOLS))
+
+        # find the best trial result for each η
         for trial in range(TRIALS):
             value = results[step][trial]
             total += value
             if distance(value) < distance(best):
                 best = value
 
-        avg[0] = total[0] / TRIALS
-        avg[1] = total[1] / TRIALS
+        # use total to calculate average (not a requirement)
+        for t in range(len(total)):
+            avg[t] = total[t] / TRIALS
 
         print("Step size: " + str(STEPS[step]))
         print("\t Average value: " + str(avg))
