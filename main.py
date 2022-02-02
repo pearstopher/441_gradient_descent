@@ -41,8 +41,8 @@ def gradient_descent(step_size, display="quiet"):
     # differentiate f with respect to x and y
     del_f = [sp.diff(f, i) for i in (x, y)]  # "del", gradient, vector derivative
 
-    # initialize X to random values in range
-    X = [rand.uniform(-10, 10), rand.uniform(-10, 10)]
+    # initialize v to random values in range
+    v = [rand.uniform(-10, 10), rand.uniform(-10, 10)]
 
     # set a step size
     eta = step_size
@@ -54,22 +54,28 @@ def gradient_descent(step_size, display="quiet"):
     def step(value):
         # x_t = x_(t-1) - η∇f( x_(t-1) )
         for i in range(len(value)):
+            # global eta
             value[i] = value[i] - eta * sp.N(del_f[i].subs(x, value[i]).subs(y, value[i]))
         return value
 
     # run gd for 500 steps
     for i in range(LOOPS):
         if display != "quiet":
-            print_val(X, i, "Iteration")
-        X = step(X)
+            print_val(v, i, "Iteration")
+        v = step(v)
 
-    print_val(X, LOOPS, "Final Iteration")
+    print_val(v, LOOPS, "Final Iteration")
+
+
+# basic little function for running the program
+def run():
+    for step in (0.1, 0.01, 0.001):
+        gradient_descent(step, "quiet")
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
-    for step in (0.1, 0.01, 0.001):
-        gradient_descent(step, "quiet")
+    run()
 
     # todo: Report the best performance out of 10 trials for each of the different η value cases.
