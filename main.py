@@ -22,15 +22,13 @@
 
 # going to calculate a derivative!
 # pip install sympy
-# from sympy import *
 import sympy as sp
 import random as rand
 
 LOOPS = 500
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+def gradient_descent(step_size, display="quiet"):
 
     # initialize symbols
     x, y = sp.symbols('x y')
@@ -41,39 +39,37 @@ if __name__ == '__main__':
     f = x**2 - 6*x + y**2 + 10*y + 20
 
     # differentiate f with respect to x and y
-    del_f = [sp.diff(f, i) for i in (x, y)]  # "del" or gradient
+    del_f = [sp.diff(f, i) for i in (x, y)]  # "del", gradient, vector derivative
 
     # initialize X to random values in range
     X = [rand.uniform(-10, 10), rand.uniform(-10, 10)]
 
     # set a step size
-    eta = 0.1
+    eta = step_size
 
     def print_val(value, i, text):
         print(text + " " + str(i) + ":\t" + str(value[0]) + ", " + str(value[1]))
 
     # create function for incrementing X
-    def step(value, step_size):
+    def step(value):
         # x_t = x_(t-1) - η∇f( x_(t-1) )
         for i in range(len(value)):
-            value[i] = value[i] - step_size * sp.N(del_f[i].subs(x, value[i]).subs(y, value[i]))
-        # return value - step_size * sp.N(del_f.subs(x, value[0]).subs(y, value[1]))
+            value[i] = value[i] - eta * sp.N(del_f[i].subs(x, value[i]).subs(y, value[i]))
         return value
-
 
     # run gd for 500 steps
     for i in range(LOOPS):
-        print_val(X, i, "Value")
-        X = step(X, eta)
+        if display != "quiet":
+            print_val(X, i, "Iteration")
+        X = step(X)
 
-    print_val(X, LOOPS, "Final")
+    print_val(X, LOOPS, "Final Iteration")
 
-    # print(sp.N(f.subs(x, 1).subs(y, 1)))
 
-    # c = sp.Symbol('c')
-    # d = c * 5
-    # d = d.subs(c, 6)
-    # print(sp.N(d))
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
 
-    # sp.Eq(a, a.doit())
-    # print(b)
+    for step in (0.1, 0.01, 0.001):
+        gradient_descent(step, "quiet")
+
+    # todo: Report the best performance out of 10 trials for each of the different η value cases.
