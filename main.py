@@ -1,5 +1,6 @@
 # CS441 homework 2 problem 13
 # gradient descent
+# Christopher Juncker
 
 # Write a short program to execute the Gradient Descent (GD) algorithm as described in class.
 # Recall that the key steps in GD are as follows:
@@ -114,6 +115,5 @@ def run():
         print("\t Best value: " + str(best))
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     run()
