@@ -1,4 +1,4 @@
-# CS441 homework 2 problem 13
+# CS445 homework 2 problem 13
 # gradient descent
 # Christopher Juncker
 
@@ -32,9 +32,9 @@ STEPS = (0.1, 0.01, 0.001)
 RAND = (-10, 10)
 
 # set up the equation here
-F = "x**2 - 6*x + y**2 + 10*y + 20"
+F = "52 - 4*x + 2*(x**2) + 24*y + 3*(y**2)"
 SYMBOLS = ('x', 'y')
-MIN = (3, -5)
+MIN = (1, -4)  # calculated true minimum by hand, required to compute accuracy
 
 
 # "silent"  does not print any output to the screen
