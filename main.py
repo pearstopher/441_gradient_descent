@@ -8,7 +8,7 @@
 #   x_t = x_(t-1) - η∇f( x_(t-1) )
 #
 # Apply GD to approximately solve for the global minimum of the function
-#   f(x, y) = x^2 - 6x + y^2 + 10y + 20
+#   f(x, y) = 52 − 4x + 2x^2 + 24y + 3y^2
 #
 # You will run (3) sets of experiments using different values for η:
 #   (i)     η = .1,
@@ -16,6 +16,7 @@
 #   (iii)   η =.001.
 #
 # Run GD for 500 steps for each experiment; in each case initialize x_0 ∈ [−10,10] × [−10,10].
+#
 # Report the best performance out of 10 trials for each of the different η value cases.
 # Provide some comments and analysis about your results.
 # Please include your (concise) GD code in your assignment write-up.
